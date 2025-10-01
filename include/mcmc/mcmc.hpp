@@ -5,6 +5,7 @@
 #include <functional>
 #include <random>
 #include <memory>
+#include <chrono>
 #include "tools.hpp"
 
 template<typename Scalar, typename State>
@@ -42,7 +43,7 @@ protected:
 
     MarkovChain() = default;
 
-    DEFAULT_RULE_OF_FOUR(MarkovChain);
+    DEFAULT_RULE_OF_FOUR(MarkovChain)
 
 };
 
@@ -102,7 +103,7 @@ public:
 
     virtual ~MonteCarlo() = default;
 
-    DEFAULT_RULE_OF_FOUR(MonteCarlo);
+    DEFAULT_RULE_OF_FOUR(MonteCarlo)
 
     virtual size_t                      N() const = 0;
 
@@ -153,7 +154,7 @@ protected:
 
     DerivedMonteCarlo(const Chain& mc) : MonteCarlo<Scalar>(), _mc(mc) {}
 
-    DEFAULT_RULE_OF_FOUR(DerivedMonteCarlo);
+    DEFAULT_RULE_OF_FOUR(DerivedMonteCarlo)
 
 
     Chain _mc;

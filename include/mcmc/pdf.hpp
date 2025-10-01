@@ -54,7 +54,7 @@ public:
 
     PDFChain(const pdf& f, const Limits& limits, const Scalar& step);
 
-    DEFAULT_RULE_OF_FOUR(PDFChain);
+    DEFAULT_RULE_OF_FOUR(PDFChain)
 
     void metropolis_update();
 
@@ -107,7 +107,7 @@ public:
 
     MonteCarloPDF(const typename MC::pdf& f, const LimitsND<Scalar, Dim>& limits, const Scalar& step=0) : Base(PDFChain<Scalar, Dim>(f, limits, choose_step(step, limits))) {}
 
-    DEFAULT_RULE_OF_FOUR(MonteCarloPDF);
+    DEFAULT_RULE_OF_FOUR(MonteCarloPDF)
 
 
     std::vector<CoordsND<Scalar, Dim>> draw(const size_t& samples, const size_t& therm_factor=0);

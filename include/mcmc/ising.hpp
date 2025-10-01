@@ -31,13 +31,13 @@ struct SpinState{
         }
     }
 
-    const int& operator()(const long int& i) const;
+    inline const int& operator()(const long int& i) const;
 
-    int& operator()(const long int& i);
+    inline int& operator()(const long int& i);
 
-    const int& operator()(long int i, long int j) const;
+    inline const int& operator()(long int i, long int j) const;
 
-    int& operator()(long int i, long int j);
+    inline int& operator()(long int i, long int j);
 
     size_t sites() const;
 
@@ -58,18 +58,18 @@ class IsingModel2DMarkovChain : public DerivedMarkovChain<Scalar, SpinState<Scal
 public:
 
     using Base = DerivedMarkovChain<Scalar, SpinState<Scalar>, IsingModel2DMarkovChain<Scalar>>;
-    using propagator = Base::propagator;
+    using propagator = typename Base::propagator;
 
 
     IsingModel2DMarkovChain(const Scalar& T, const size_t& Lx, const size_t& Ly) : Base(SpinState<Scalar>(random_spins(Lx, Ly), Lx, Ly)), _T(T), _spin_roulette(0, Lx*Ly-1){}
 
-    DEFAULT_RULE_OF_FOUR(IsingModel2DMarkovChain);
+    DEFAULT_RULE_OF_FOUR(IsingModel2DMarkovChain)
 
     const Scalar& Temp() const{
         return _T;
     }
 
-    Base::propagator method(const std::string& name) const;
+    typename Base::propagator method(const std::string& name) const;
 
     void ssf_update();
 
@@ -146,23 +146,23 @@ public:
 
 
 template<typename Scalar>
-const int& SpinState<Scalar>::operator()(long int i, long int j) const{
+inline const int& SpinState<Scalar>::operator()(long int i, long int j) const{
     return this->operator()(index(i, j));
 }
 
 template<typename Scalar>
-int& SpinState<Scalar>::operator()(long int i, long int j) {
+inline int& SpinState<Scalar>::operator()(long int i, long int j) {
     return this->operator()(index(i, j));
 }
 
 template<typename Scalar>
-int& SpinState<Scalar>::operator()(const long int& i){
-    return spins.at((i+spins.size()) % spins.size());
+inline int& SpinState<Scalar>::operator()(const long int& i){
+    return spins[((i+spins.size()) % spins.size())];
 }
 
 template<typename Scalar>
-const int& SpinState<Scalar>::operator()(const long int& i) const {
-    return spins.at((i+spins.size()) % spins.size());
+inline const int& SpinState<Scalar>::operator()(const long int& i) const {
+    return spins[((i+spins.size()) % spins.size())];
 }
 
 template<typename Scalar>
@@ -233,21 +233,21 @@ void IsingModel2DMarkovChain<Scalar>::wolff_update(){
     std::vector<size_t> remaining = {site}; //container with sites whose neighbors we need to check
 
     S(site) = -s;
-    size_t cluster_size = 1;
+    // size_t cluster_size = 1;
     while (remaining.size()>0){
         site = remaining.back(); remaining.pop_back();
         for (const size_t& nr : S.neighbors(site)){
             if ( (S(nr) == s ) && (this->draw_uniform(0, 1) < p)){
                 S(nr) = -s;
                 remaining.push_back(nr);
-                cluster_size++;
+                // cluster_size++;
             }
         }
     }
 }
 
 template<typename Scalar>
-IsingModel2DMarkovChain<Scalar>::propagator IsingModel2DMarkovChain<Scalar>::method(const std::string& name) const {
+typename IsingModel2DMarkovChain<Scalar>::propagator IsingModel2DMarkovChain<Scalar>::method(const std::string& name) const {
     if (name == "ssf"){
         return static_cast<propagator>(&IsingModel2DMarkovChain<Scalar>::ssf_update);
     }

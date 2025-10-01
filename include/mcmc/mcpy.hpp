@@ -9,6 +9,8 @@
 #include <pybind11/stl.h>
 #include "ising.hpp"
 #include "pdf.hpp"
+#include <array>
+#include <stdexcept>
 
 
 namespace py = pybind11;
@@ -121,15 +123,6 @@ Observable<Scalar, State> to_observable(py::function f){
     }
 }
 
-
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <array>
-#include <stdexcept>
-#include <iterator>
-
-namespace py = pybind11;
-
 template<typename Scalar, size_t Dim>
 LimitsND<Scalar, Dim> to_limits(py::iterable py_limits) {
     LimitsND<Scalar, Dim> limits;
@@ -217,6 +210,8 @@ public:
 
     PyMonteCarlo() = default;
 
+    virtual ~PyMonteCarlo();
+
     inline size_t               N() const { return mc().N();}
 
     void                        update(const std::string& method, const size_t& steps, const size_t& sweeps){
@@ -253,7 +248,7 @@ template<typename Scalar>
 class PyPDF1D : public PyPDF<Scalar>{
 
 public:
-    PyPDF1D(py::function f, Scalar a, Scalar b, Scalar step) : PyPDF<Scalar>(), _mc(to_pdf<Scalar>(f), {{a, b}}, step){}
+    PyPDF1D(py::function f, Scalar a, Scalar b, Scalar step) : PyPDF<Scalar>(), _mc(to_pdf<Scalar>(f), {{{a, b}}}, step){}
 
     MonteCarlo<Scalar>& mc() override{
         return _mc;

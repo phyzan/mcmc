@@ -6,7 +6,7 @@
 #include <cmath>
 #include <omp.h>
 #include <stdexcept>
-#include <iostream>
+
 
 #define DEFAULT_RULE_OF_FOUR(CLASSNAME)                  \
     CLASSNAME(const CLASSNAME& other) = default;      \
@@ -124,8 +124,11 @@ protected:
 template<typename Scalar>
 Scalar sum(const std::vector<Scalar>& x){
     Scalar res = 0;
-    for (size_t i=0; i<x.size(); i++){
-        res += x[i];
+    const Scalar* data = x.data();
+    const size_t size = x.size();
+    #pragma omp simd reduction(+:res)
+    for (size_t i=0; i<size; i++){
+        res += data[i];
     }
     return res;
 }

@@ -82,6 +82,24 @@
         "random": "cpp",
         "mprealsupport": "cpp",
         "__config": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+    },
+    "clangd.arguments": [
+      "--compile-commands-dir=${workspaceFolder}/.vscode"
+    ],
+    "[cpp]": {"editor.semanticHighlighting.enabled": true},
+    "editor.semanticTokenColorCustomizations": {
+        "enabled": true,
+        "rules": {
+            "parameter": "#9CDCFE",
+            "variable": "#9CDCFE",         // variables,
+            "field": "#FF0000",          // all keywords
+            "function": "#DCDCAA",         // functions
+            "type": "#4EC9B0",             // types
+            "concept": "#0077ff",
+            "operator": "#f5698c",
+            "property": "#00aeff",         // parameters
+            "storage": "#00aeff"         // parameters
+        }
     }
 }
