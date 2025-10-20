@@ -1,4 +1,4 @@
-#include "../include/mcmc/mcpy.hpp"
+#include "include/mcpy/mcpy.hpp"
 
 PYBIND11_MODULE(mcpy, m)
 {

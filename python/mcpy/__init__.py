@@ -1,0 +1,1 @@
+from .mcpy import * #type: ignore

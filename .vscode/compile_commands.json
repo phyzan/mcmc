@@ -1,7 +1,0 @@
-[
-  {
-    "directory": "/home/senpy/Documents/repos/newpack/",
-    "file": "test.cpp",
-    "command": "clang++ -O3 -Wall -march=x86-64 -shared -std=c++20 -fvisibility=hidden -fopenmp -I/usr/include/python3.12 -I/usr/include/pybind11 test.cpp -o test"
-  }
-]

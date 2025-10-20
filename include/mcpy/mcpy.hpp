@@ -7,11 +7,10 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pytypes.h>
 #include <pybind11/stl.h>
-#include "ising.hpp"
-#include "pdf.hpp"
 #include <array>
 #include <stdexcept>
-
+#include "include/mcmc/ising.hpp"
+#include "include/mcmc/pdf.hpp"
 
 namespace py = pybind11;
 
@@ -110,7 +109,7 @@ py::list to_pysamples(const std::vector<Sample<Scalar>>& samples){
 }
 
 template<typename Scalar, typename State, typename PyState>
-Observable<Scalar, State> to_observable(py::function f){
+Observable<Scalar, State> to_observable(const py::function& f){
     if (typeid(State) == typeid(PyState)){
         return [f](const State& state){
             return f(&state).template cast<Scalar>();
@@ -124,7 +123,7 @@ Observable<Scalar, State> to_observable(py::function f){
 }
 
 template<typename Scalar, size_t Dim>
-LimitsND<Scalar, Dim> to_limits(py::iterable py_limits) {
+LimitsND<Scalar, Dim> to_limits(const py::iterable& py_limits) {
     LimitsND<Scalar, Dim> limits;
 
     size_t i = 0;
@@ -132,24 +131,26 @@ LimitsND<Scalar, Dim> to_limits(py::iterable py_limits) {
     py::iterator outer_end = py_limits.end();
 
     while (outer_it != outer_end) {
-        if (i >= Dim)
-            throw std::runtime_error("Too many limits provided. Expected " + std::to_string(Dim));
+        if (i >= Dim){throw std::runtime_error("Too many limits provided. Expected " + std::to_string(Dim));
+        }
 
         py::handle item = *outer_it;
         py::iterable pair = py::cast<py::iterable>(item);
         py::iterator inner_it = pair.begin();
         py::iterator inner_end = pair.end();
 
-        if (inner_it == inner_end)
-            throw std::runtime_error("Limit pair too short");
+        if (inner_it == inner_end){throw std::runtime_error("Limit pair too short");
+        }
 
         Scalar a = py::cast<Scalar>(*inner_it++);
-        if (inner_it == inner_end)
+        if (inner_it == inner_end){
             throw std::runtime_error("Limit pair too short");
+        }
 
         Scalar b = py::cast<Scalar>(*inner_it++);
-        if (inner_it != inner_end)
+        if (inner_it != inner_end){
             throw std::runtime_error("Limit pair too long");
+        }
 
         limits[i][0] = a;
         limits[i][1] = b;
@@ -158,22 +159,23 @@ LimitsND<Scalar, Dim> to_limits(py::iterable py_limits) {
         ++outer_it;
     }
 
-    if (i != Dim)
+    if (i != Dim){
         throw std::runtime_error("Too few limits provided. Expected " + std::to_string(Dim));
+    }
 
     return limits;
 }
 
 
 template<typename Scalar>
-std::function<Scalar(const CoordsND<Scalar, 1>&)> to_pdf(py::function f){
+std::function<Scalar(const CoordsND<Scalar, 1>&)> to_pdf(const py::function& f){
     return [f](const CoordsND<Scalar, 1>& x) -> Scalar {
         return f(x[0]).template cast<Scalar>();
     };
 }
 
 template<typename Scalar, size_t Dim>
-std::function<Scalar(const CoordsND<Scalar, Dim>&)> to_pdf_ND(py::function f){
+std::function<Scalar(const CoordsND<Scalar, Dim>&)> to_pdf_ND(const py::function& f){
     return [f](const CoordsND<Scalar, Dim>& x) -> Scalar {
         return f(*to_tuple<Scalar>(x)).template cast<Scalar>();
     };
@@ -392,7 +394,7 @@ private:
 
 
 template<typename Scalar>
-void py_update_all(py::iterable obj, py::str py_method, const size_t& steps, const size_t& sweeps, int threads){
+void py_update_all(const py::iterable& obj, const py::str& py_method, const size_t& steps, const size_t& sweeps, int threads){
     std::string method = py_method.cast<std::string>();
     std::vector<PyMonteCarlo<Scalar>*> array;
     for (const py::handle& item : obj){

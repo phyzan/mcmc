@@ -84,8 +84,9 @@
         "__config": "cpp",
         "print": "cpp",
     },
+    "C_Cpp.intelliSenseEngine": "disabled",
     "clangd.arguments": [
-      "--compile-commands-dir=${workspaceFolder}/.vscode"
+        "--header-insertion=never"
     ],
     "[cpp]": {"editor.semanticHighlighting.enabled": true},
     "editor.semanticTokenColorCustomizations": {
