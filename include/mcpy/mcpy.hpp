@@ -212,7 +212,7 @@ public:
 
     PyMonteCarlo() = default;
 
-    virtual ~PyMonteCarlo();
+    virtual ~PyMonteCarlo() = default;
 
     inline size_t               N() const { return mc().N();}
 
