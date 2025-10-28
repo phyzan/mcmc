@@ -8,7 +8,7 @@
 #include <array>
 #include <stdexcept>
 #include <string>
-
+#include <iostream>
 
 template<typename Scalar, size_t Dim>
 using CoordsND = std::array<Scalar, Dim>; //simple alias
@@ -110,7 +110,7 @@ public:
     DEFAULT_RULE_OF_FOUR(MonteCarloPDF)
 
 
-    std::vector<CoordsND<Scalar, Dim>> draw(const size_t& samples, const size_t& therm_factor=0);
+    std::vector<CoordsND<Scalar, Dim>> draw(const size_t& samples, const size_t& therm_steps=0);
 };
 
 
@@ -142,8 +142,9 @@ template<typename Scalar, size_t Dim>
 void PDFChain<Scalar, Dim>::metropolis_update(){
     const Coords& p = this->_state;
     Coords p_new = _choose_point();
-    Scalar r = _func(p_new)/_func(p);
-    if (r > 1 || ( r >= this->draw_uniform(0, 1))){
+    Scalar f_new = _func(p_new);
+    Scalar f = _func(p);
+    if (f_new > f || ( f_new >= this->draw_uniform(0, 1)*f)){
         this->_state = p_new;
     }
 }
