@@ -179,11 +179,16 @@ BinningAnalysis<Scalar> Sample<Scalar>::bin_it() const{
 }
 
 template<typename Scalar>
+inline Scalar abs(const Scalar& x){
+    return (x >= 0) ? x : -x;
+}
+
+template<typename Scalar>
 void BinningAnalysis<Scalar>::_init(std::vector<Scalar> sample){ //passing a modifiable copy
     //We cannot keep all the samples, only a power of 2
     size_t min_samples = 64;
-    size_t max_level = std::abs(log2(sample.size()/min_samples));
-    size_t max_samples = min_samples * pow(2, max_level);
+    size_t max_level = abs(log2(sample.size()/min_samples));
+    size_t max_samples = min_samples * size_t(pow(2, double(max_level)));
     //keep only the last N samples, where N is the maximum possible power of 2
     sample = std::vector<Scalar>(sample.end() - max_samples, sample.end());
     std::vector<Scalar> errors(max_level+1);
